@@ -5,6 +5,24 @@
     <title>Main</title>
 </head>
 <body>
-    <div>{{param1}}</div>
+    <div>
+        <form method="post">
+            <input type="text" name="licence" placeholder="Номер и серия водительского удостоверения:">
+            <input type="text" name="name" placeholder="ФИО:">
+            <input type="text" name="age" placeholder="Возраст:">
+            <input type="text" name="experience" placeholder="Стаж вождения:">
+            <button type="submit" onclick="location.reload();">Сохранить</button>
+        </form>
+    </div>
+    <div>Список водителей:</div>
+    {{#drivers}}
+        <div>
+            <b>{{id}}</b>
+            <span>{{driversLicense}}</span>
+            <span>{{name}}</span>
+            <span>{{age}}</span>
+            <span>{{drivingExperience}}</span>
+        </div>
+    {{/drivers}}
 </body>
 </html>

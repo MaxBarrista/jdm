@@ -21,7 +21,19 @@ public class Driver
 
 		private Integer drivingExperience;
 
-		public Integer getId()
+	public Driver()
+	{
+	}
+
+	public Driver(String driversLicense, String name, Integer age, Integer drivingExperience)
+	{
+		this.driversLicense = driversLicense;
+		this.name = name;
+		this.age = age;
+		this.drivingExperience = drivingExperience;
+	}
+
+	public Integer getId()
 		{
 				return id;
 		}
