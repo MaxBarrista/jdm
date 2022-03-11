@@ -32,7 +32,7 @@
 </div>
 <div>Список автомобилей:</div>
 <form method="get" action="/main">
-    <input type="text" name="carModel" placeholder="Фильтр(Модель)" value="${carModel}">
+    <input type="text" name="carModel" placeholder="Фильтр(Модель)" value="${carModel!""}">
     <button type="submit">Найти</button>
 </form>
 <table>

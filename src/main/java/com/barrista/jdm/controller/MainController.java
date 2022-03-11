@@ -52,29 +52,13 @@ public class MainController
 			@RequestParam Integer modelYear,
 			@RequestParam Integer mileage,
 			@AuthenticationPrincipal User user,
-			Map<String, Object> model)
+			Model model)
 	{
 		Car car = new Car(manufacturer, carModel, modelYear, mileage, user);
 		carRepo.save(car);
 		Iterable<Car> cars = carRepo.findAll();
-		model.put("cars", cars);
+		model.addAttribute("cars", cars);
 
-		return "main";
-	}
-
-	@PostMapping("filter")
-	public String filter(@RequestParam String carModel, Map<String, Object> model)
-	{
-		Iterable<Car> cars;
-		if (carModel != null && !carModel.isEmpty())
-		{
-			cars = carRepo.findByModelContaining(carModel);
-		}
-		else
-		{
-			cars = carRepo.findAll();
-		}
-		model.put("cars", cars);
 		return "main";
 	}
 }
