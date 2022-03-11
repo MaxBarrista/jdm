@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>Spring Security Example </title>
-</head>
-<body>
-<div>Login page</div>
+<#import "parts/common.ftlh" as c>
+<#import "parts/login.ftlh" as l>
 
+<@c.header />
+Login page
+<@l.login "/login" />
 <a href="/registration">Add new user</a>
-</body>
-</html>
+<@c.footer />
