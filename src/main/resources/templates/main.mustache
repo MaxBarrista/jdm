@@ -3,6 +3,19 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Main</title>
+    <style>
+        .table-header {
+            background: darkgray;
+        }
+        TABLE {
+            border-collapse: collapse;
+            margin: 10px;
+        }
+        TD {
+            border: 1px solid black;
+            padding: 2px;
+        }
+    </style>
 </head>
 <body>
     <div>
@@ -13,28 +26,39 @@
     </div>
     <div>
         <form method="post">
-            <input type="text" name="licence" placeholder="Номер и серия водительского удостоверения:">
-            <input type="text" name="name" placeholder="ФИО:">
-            <input type="text" name="age" placeholder="Возраст:">
-            <input type="text" name="experience" placeholder="Стаж вождения:">
+            <input type="text" name="manufacturer" placeholder="Марка:">
+            <input type="text" name="model" placeholder="Модель:">
+            <input type="text" name="modelYear" placeholder="Год:">
+            <input type="text" name="mileage" placeholder="Пробег:">
             <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
-            <button type="submit">Сохранить</button>
+            <button type="submit">Добавить</button>
         </form>
     </div>
-    <div>Список водителей:</div>
+    <div>Список автомобилей:</div>
     <form method="post" action="filter">
-        <input type="text" name="filter" placeholder="Фильтр(ФИО)">
+        <input type="text" name="carModel" placeholder="Фильтр(Модель)">
         <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
         <button type="submit">Найти</button>
     </form>
-    {{#drivers}}
-        <div>
-            <b>{{id}}</b>
-            <span>{{driversLicense}}</span>
-            <span>{{name}}</span>
-            <span>{{age}}</span>
-            <span>{{drivingExperience}}</span>
-        </div>
-    {{/drivers}}
+    <table>
+        <tr class="table-header">
+            <td><b>ID</b></td>
+            <td><span>Марка</span></td>
+            <td><span>Модель</span></td>
+            <td><span>Год</span></td>
+            <td><span>Пробег</span></td>
+            <td><strong>Владелец</strong></td>
+        </tr>
+        {{#cars}}
+        <tr>
+            <td><b>{{id}}</b></td>
+            <td><span>{{manufacturer}}</span></td>
+            <td><span>{{model}}</span></td>
+            <td><span>{{modelYear}}</span></td>
+            <td><span>{{mileage}}</span></td>
+            <td><strong>{{ownerName}}</strong></td>
+        </tr>
+        {{/cars}}
+    </table>
 </body>
 </html>

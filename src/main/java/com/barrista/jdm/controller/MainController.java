@@ -1,8 +1,10 @@
 package com.barrista.jdm.controller;
 
-import com.barrista.jdm.domain.Driver;
-import com.barrista.jdm.repos.DriverRepo;
+import com.barrista.jdm.domain.Car;
+import com.barrista.jdm.domain.User;
+import com.barrista.jdm.repos.CarRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +16,7 @@ import java.util.Map;
 public class MainController
 {
 	@Autowired
-	private DriverRepo driverRepo;
+	private CarRepo carRepo;
 
 	@GetMapping("/")
 	public String greeting(Map<String, Object> model)
@@ -25,41 +27,43 @@ public class MainController
 	@GetMapping("/main")
 	public String main(Map<String, Object> model)
 	{
-		Iterable<Driver> drivers = driverRepo.findAll();
+		Iterable<Car> cars = carRepo.findAll();
 
-		model.put("drivers", drivers);
+		model.put("cars", cars);
 
 		return "main";
 	}
 
 	@PostMapping("/main")
-	public String save(@RequestParam String licence,
-					   @RequestParam String name,
-					   @RequestParam Integer age,
-					   @RequestParam Integer experience,
-					   Map<String, Object> model)
+	public String save(
+			@RequestParam String manufacturer,
+			@RequestParam(name="model") String carModel,
+			@RequestParam Integer modelYear,
+			@RequestParam Integer mileage,
+			@AuthenticationPrincipal User user,
+			Map<String, Object> model)
 	{
-		Driver driver = new Driver(licence, name, age, experience);
-		driverRepo.save(driver);
-		Iterable<Driver> drivers = driverRepo.findAll();
-		model.put("drivers", drivers);
+		Car car = new Car(manufacturer, carModel, modelYear, mileage, user);
+		carRepo.save(car);
+		Iterable<Car> cars = carRepo.findAll();
+		model.put("cars", cars);
 
 		return "main";
 	}
 
 	@PostMapping("filter")
-	public String filter(@RequestParam String filter, Map<String, Object> model)
+	public String filter(@RequestParam String carModel, Map<String, Object> model)
 	{
-		Iterable<Driver> drivers;
-		if (filter != null && !filter.isEmpty())
+		Iterable<Car> cars;
+		if (carModel != null && !carModel.isEmpty())
 		{
-			drivers = driverRepo.findByNameContaining(filter);
+			cars = carRepo.findByModelContaining(carModel);
 		}
 		else
 		{
-			drivers = driverRepo.findAll();
+			cars = carRepo.findAll();
 		}
-		model.put("drivers", drivers);
+		model.put("cars", cars);
 		return "main";
 	}
 }
