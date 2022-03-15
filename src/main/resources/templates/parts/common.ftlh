@@ -13,3 +13,7 @@
 </body>
 </html>
 </#macro>
+
+<#macro mainPage>
+<a href="/main">Main page</a>
+</#macro>

@@ -21,4 +21,5 @@ List of users
     </tbody>
     </thead>
 </table>
+<@c.mainPage />
 <@c.footer />

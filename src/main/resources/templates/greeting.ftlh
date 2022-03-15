@@ -2,5 +2,5 @@
 
 <@c.header />
 <div>Hello, User!</div>
-<a href="/main">Go to Main page</a>
+<@c.mainPage />
 <@c.footer />
