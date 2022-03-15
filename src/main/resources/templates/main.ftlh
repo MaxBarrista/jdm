@@ -18,7 +18,8 @@
 </@c.header>
 
 <div>
-    <@l.logout />
+    <@l.logout /><br>
+    <span><a href="/user">List of users</a></span>
 </div>
 <div>
     <form method="post">
