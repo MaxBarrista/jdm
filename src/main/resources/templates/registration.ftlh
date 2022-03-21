@@ -3,6 +3,7 @@
 
 <@c.header />
 <div>Add new user</div>
-${message!""}
+${message!}
 <@l.login "/registration" />
+<@l.loginPage />
 <@c.footer />

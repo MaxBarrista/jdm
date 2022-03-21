@@ -18,6 +18,8 @@ public class Car
     @JoinColumn(name = "user_id")
     private User owner;
 
+    private String filename;
+
     public Car()
     {
     }
@@ -94,5 +96,15 @@ public class Car
     public String getOwnerName()
     {
         return owner == null ? "" : owner.getUsername();
+    }
+
+    public String getFilename()
+    {
+        return filename;
+    }
+
+    public void setFilename(String filename)
+    {
+        this.filename = filename;
     }
 }

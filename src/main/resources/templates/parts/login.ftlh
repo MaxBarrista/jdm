@@ -13,3 +13,7 @@
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
     </form>
 </#macro>
+
+<#macro loginPage>
+    <a href="/login">back</a>
+</#macro>

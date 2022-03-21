@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>JDM</title>
-    <#nested>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 </#macro>
