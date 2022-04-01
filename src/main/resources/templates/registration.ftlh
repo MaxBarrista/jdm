@@ -2,8 +2,8 @@
 <#import "parts/login.ftlh" as l>
 
 <@c.header />
-<div>Add new user</div>
+<div class="mb-1">Add new user</div>
 ${message!}
-<@l.login "/registration" />
+<@l.login "/registration" true/>
 <@l.loginPage />
 <@c.footer />

@@ -8,7 +8,7 @@ List of users
     <tr>
         <td>Name</td>
         <td>Role</td>
-        <td></td>
+        <td><img class="icon" src="/static/icons/editIcon.png"></td>
     </tr>
     <tbody>
 <#list users as user>
@@ -21,5 +21,4 @@ List of users
     </tbody>
     </thead>
 </table>
-<@c.mainPage />
 <@c.footer />

@@ -9,12 +9,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,13 +36,27 @@ public class MainController
 	}
 
 	@GetMapping("/main")
-	public String main(@RequestParam(required = false, defaultValue = "") String carModel, Model model)
+	public String main(
+			@RequestParam(required = false, defaultValue = "") String modelFilter,
+			@RequestParam(required = false, defaultValue = "") String manufacturerFilter,
+			Model model)
 	{
-		Iterable<Car> cars = carRepo.findAll();
+		Iterable<Car> cars;
 
-		if (carModel != null && !carModel.isEmpty())
+		if (modelFilter != null && !modelFilter.isEmpty()
+				&& manufacturerFilter != null && !manufacturerFilter.isEmpty())
 		{
-			cars = carRepo.findByModelContaining(carModel);
+			List<Car> carsToAdd = carRepo.findByModelContaining(modelFilter);
+			carsToAdd.addAll(carRepo.findByManufacturerContaining(manufacturerFilter));
+			cars = carsToAdd;
+		}
+		else if (modelFilter != null && !modelFilter.isEmpty())
+		{
+			cars = carRepo.findByModelContaining(modelFilter);
+		}
+		else if (manufacturerFilter != null && !manufacturerFilter.isEmpty())
+		{
+			cars = carRepo.findByManufacturerContaining(manufacturerFilter);
 		}
 		else
 		{
@@ -48,7 +64,8 @@ public class MainController
 		}
 
 		model.addAttribute("cars", cars);
-		model.addAttribute("carModel", carModel);
+		model.addAttribute("modelFilter", modelFilter);
+		model.addAttribute("manufacturerFilter", manufacturerFilter);
 
 		return "main";
 	}
@@ -87,5 +104,27 @@ public class MainController
 		model.addAttribute("cars", cars);
 
 		return "main";
+	}
+
+	@GetMapping("/delete/{carId}")
+	public String delete(@PathVariable String carId)
+	{
+		List<Car> temp = carRepo.findById(Integer.valueOf(carId));
+		if (temp != null && temp.size() > 0)
+		{
+			Car car = carRepo.findById(Integer.valueOf(carId)).get(0);
+			carRepo.delete(car);
+		}
+		return "redirect:/main";
+	}
+
+	@GetMapping("/edit/{carId}")
+	public String edit(@PathVariable Integer carId)
+	{
+		Car car = carRepo.findById(Integer.valueOf(carId)).get(0);
+		carRepo.delete(car);
+
+		carRepo.save(car);
+		return "redirect:/main";
 	}
 }

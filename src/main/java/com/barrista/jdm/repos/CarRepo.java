@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface CarRepo extends CrudRepository<Car, Long>
 {
+    List<Car> findById(Integer id);
     List<Car> findByModelContaining(String filter);
+    List<Car> findByManufacturerContaining(String filter);
 }
