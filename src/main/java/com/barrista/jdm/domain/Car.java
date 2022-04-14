@@ -1,6 +1,7 @@
 package com.barrista.jdm.domain;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Car
@@ -13,6 +14,7 @@ public class Car
     private String model;
     private Integer modelYear;
     private Integer mileage;
+    private Date published;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -24,13 +26,14 @@ public class Car
     {
     }
 
-    public Car(String manufacturer, String model, Integer modelYear, Integer mileage, User owner)
+    public Car(String manufacturer, String model, Integer modelYear, Integer mileage, User user, Date published)
     {
         this.manufacturer = manufacturer;
         this.model = model;
         this.modelYear = modelYear;
         this.mileage = mileage;
-        this.owner = owner;
+        this.owner = user;
+        this.published = published;
     }
 
     public Integer getId()
@@ -106,5 +109,15 @@ public class Car
     public void setFilename(String filename)
     {
         this.filename = filename;
+    }
+
+    public Date getPublished()
+    {
+        return published;
+    }
+
+    public void setPublished(Date published)
+    {
+        this.published = published;
     }
 }

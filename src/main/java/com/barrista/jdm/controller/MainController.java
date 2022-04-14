@@ -16,9 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class MainController
@@ -33,6 +31,12 @@ public class MainController
 	public String greeting(Map<String, Object> model)
 	{
 		return "greeting";
+	}
+
+	@GetMapping("/error")
+	public String error(Model model)
+	{
+		return "error";
 	}
 
 	@GetMapping("/main")
@@ -81,7 +85,8 @@ public class MainController
 			Model model
 	) throws IOException
 	{
-		Car car = new Car(manufacturer, carModel, modelYear, mileage, user);
+		Calendar calendar = new GregorianCalendar();
+		Car car = new Car(manufacturer, carModel, modelYear, mileage, user, calendar.getTime());
 
 		if(file != null && !file.getOriginalFilename().isEmpty())
 		{
@@ -112,19 +117,25 @@ public class MainController
 		List<Car> temp = carRepo.findById(Integer.valueOf(carId));
 		if (temp != null && temp.size() > 0)
 		{
-			Car car = carRepo.findById(Integer.valueOf(carId)).get(0);
-			carRepo.delete(car);
+			carRepo.delete(temp.get(0));
 		}
 		return "redirect:/main";
 	}
 
 	@GetMapping("/edit/{carId}")
-	public String edit(@PathVariable Integer carId)
+	public String edit(
+			@PathVariable String carId,
+			Model model
+	)
 	{
-		Car car = carRepo.findById(Integer.valueOf(carId)).get(0);
-		carRepo.delete(car);
+		List<Car> temp = carRepo.findById(Integer.valueOf(carId));
+		if (temp != null && temp.size() > 0)
+		{
+			Car car = temp.get(0);
+			model.addAttribute("car", car);
+			return "carEdit";
+		}
 
-		carRepo.save(car);
 		return "redirect:/main";
 	}
 }

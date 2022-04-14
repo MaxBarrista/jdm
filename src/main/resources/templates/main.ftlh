@@ -48,18 +48,17 @@
 
 <table>
     <tr class="table-header">
-        <td><span>Id</span></td>
         <td><span>Image</span></td>
         <td><span>Manufacturer</span></td>
         <td><span>Model</span></td>
         <td><span>Year</span></td>
         <td><span>Mileage</span></td>
-        <td><strong>Owner</strong></td>
+        <td><span>Published</span></td>
+        <td><strong><span>Owner</span></strong></td>
         <td><span>Actions</span></td>
     </tr>
     <#list cars as car>
         <tr>
-            <td><span>${car.id}</span></td>
             <td class="car-image">
                 <#if car.filename??>
                     <img src="/img/${car.filename}" alt="${car.model}">
@@ -69,9 +68,14 @@
             </td>
             <td><span>${car.manufacturer}</span></td>
             <td><span>${car.model}</span></td>
-            <td><span>${car.modelYear}</span></td>
+            <td><span>${car.modelYear?string.number}</span></td>
             <td><span>${car.mileage}</span></td>
-            <td><strong>${car.ownerName}</strong></td>
+            <td>
+                <#if car.published??>
+                    <span>${car.published?datetime}</span>
+                </#if>
+            </td>
+            <td><strong><span>${car.ownerName}</span></strong></td>
             <td>
                 <a href="/delete/${car.id}"><img class="icon" src="/static/icons/deleteIcon.png"></a>
                 <a href="/edit/${car.id}"><img class="icon" src="/static/icons/editIcon.png"></a>

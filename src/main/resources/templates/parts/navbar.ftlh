@@ -1,8 +1,8 @@
 <#include "security.ftlh">
 <#import "login.ftlh" as l>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
-    <a class="navbar-brand" href="/">JMD</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+    <a class="navbar-brand" href="/">JDM</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -20,10 +20,13 @@
                     <a class="nav-link" href="/user">User list</a>
                 </li>
             </#if>
-
-
         </ul>
         <div class="navbar-text mr-3">${name}</div>
-        <@l.logout /><br>
+        <#if known>
+            <@l.logoutButton/>
+        <#else>
+            <@l.loginButton/>
+        </#if>
+
     </div>
 </nav>

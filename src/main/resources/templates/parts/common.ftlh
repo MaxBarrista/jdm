@@ -1,19 +1,17 @@
-<#macro header>
+<#macro header error=false>
 <!DOCTYPE html>
-<html lang="en" class="bg-black">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>JDM</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
 </head>
-<body class="bg-black">
+<body class="bg-black <#if error>error</#if>">
 <#include "navbar.ftlh">
-    <div class="container bg-dark my-5 p-5">
+    <div class="<#if error>error-container<#else>container bg-dark my-5 p-5</#if>">
 </#macro>
 
 <#macro footer>
@@ -23,8 +21,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>
-</#macro>
-
-<#macro mainPage>
-<a href="/main">Main page</a>
 </#macro>

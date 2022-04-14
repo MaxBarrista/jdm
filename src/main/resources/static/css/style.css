@@ -1,3 +1,6 @@
+* {
+    color: azure;
+}
 
 .table-header {
     background: darkgray;
@@ -23,4 +26,35 @@ TD {
 
 .bg-black {
     background: black;
+}
+
+.error {
+    background: url(/static/images/404.jpg) no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.error-container {
+    width: 100%;
+    position: absolute;
+    top: 65%;
+    text-align: center;
+}
+
+.error-container P {
+    color: #2a2a2a;
+    font-weight: bold;
+}
+
+.error-container A {
+    color: #2a2a2a;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.error-container A:hover{
+    color: azure;
+    text-decoration-line: none;
 }
