@@ -34,12 +34,12 @@ public class UserService implements UserDetailsService
         return userRepo.findByUsername(username);
     }
 
-    public boolean addUser(User user) {
+    public int addUser(User user) {
         User usernameFromDb = userRepo.findByUsername(user.getUsername());
 
         if (usernameFromDb != null)
         {
-            return false;
+            return 1;
         }
 
         user.setActive(true);
@@ -57,7 +57,7 @@ public class UserService implements UserDetailsService
             );
             mailSender.send(user.getEmail(), "Activation code", message);
         }
-        return true;
+        return 0;
     }
 
     public boolean activateCode(String code)

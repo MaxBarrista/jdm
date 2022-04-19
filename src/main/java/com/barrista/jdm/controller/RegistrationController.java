@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -24,9 +25,18 @@ public class RegistrationController
     }
 
     @PostMapping("/registration")
-    public String addUser(User user, Map<String, Object> model)
+    public String addUser(
+            User user, Map<String,
+            Object> model,
+            @RequestParam String password,
+            @RequestParam String confirmPassword)
     {
-        if (!userService.addUser(user))
+        if (!password.equals(confirmPassword))
+        {
+            model.put("message", "Passwords do not match!");
+            return "registration";
+        }
+        else if (userService.addUser(user) == 1)
         {
             model.put("message", "User exists!");
             return "registration";
