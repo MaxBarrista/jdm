@@ -77,8 +77,8 @@
             </td>
             <td><strong><span>${car.ownerName}</span></strong></td>
             <td>
-                <a href="/delete/${car.id}"><img class="icon" src="/static/icons/deleteIcon.png"></a>
                 <a href="/edit/${car.id}"><img class="icon" src="/static/icons/editIcon.png"></a>
+                <a href="/delete/${car.id}"><img class="icon" src="/static/icons/deleteIcon.png"></a>
             </td>
         </tr>
     <#else>

@@ -26,28 +26,40 @@ public class RegistrationController
 
     @PostMapping("/registration")
     public String addUser(
-            User user, Map<String,
-            Object> model,
+            User user,
+            Map<String, Object> model,
+            @RequestParam String email,
             @RequestParam String password,
             @RequestParam String confirmPassword)
     {
         if (!password.equals(confirmPassword))
         {
-            model.put("message", "Passwords do not match!");
+            model.put("errorMessage", "Passwords do not match");
             return "registration";
         }
-        else if (userService.addUser(user) == 1)
+        else
         {
-            model.put("message", "User exists!");
-            return "registration";
+            int errorMessage = userService.addUser(user);
+            if (errorMessage == 1)
+            {
+                model.put("errorMessage", "This username is already taken");
+                return "registration";
+            }
+            else if (errorMessage == 2)
+            {
+                model.put("errorMessage", "This email is already taken");
+                return "registration";
+            }
         }
-        return "redirect:/login";
+        model.put("message", "We sent an activation code to " + user.getEmail()
+                + ". Check it to verify your your email");
+        return "login";
     }
 
     @GetMapping("/activate/{code}")
     public String activate(Model model, @PathVariable String code)
     {
-        boolean isActivated = userService.activateCode(code);
+        boolean isActivated = userService.activateUserWithCode(code);
 
         if (isActivated)
         {
@@ -55,9 +67,8 @@ public class RegistrationController
         }
         else
         {
-            model.addAttribute("message", "Activation failed!");
+            model.addAttribute("errorMessage", "User is already activated");
         }
-
-        return "loign";
+        return "login";
     }
 }

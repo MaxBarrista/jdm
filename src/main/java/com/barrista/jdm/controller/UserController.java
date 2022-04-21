@@ -40,6 +40,14 @@ public class UserController
         return "userEdit";
     }
 
+    @GetMapping("delete/{userId}")
+    public String delete(@PathVariable Long userId)
+    {
+        User user = userRepo.getById(userId);
+        userRepo.delete(user);
+        return "redirect:/user";
+    }
+
     @PostMapping
     public String userSave(
             @RequestParam String username,

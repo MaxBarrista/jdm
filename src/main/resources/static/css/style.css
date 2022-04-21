@@ -58,3 +58,7 @@ TD {
     color: azure;
     text-decoration-line: none;
 }
+
+.dark-input {
+    accent-color: #222222;
+}

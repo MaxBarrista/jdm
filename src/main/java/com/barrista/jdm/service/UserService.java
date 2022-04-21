@@ -41,8 +41,13 @@ public class UserService implements UserDetailsService
         {
             return 1;
         }
+        usernameFromDb = userRepo.findByEmail(user.getEmail());
+        if (usernameFromDb != null && usernameFromDb.isActive())
+        {
+            return 2;
+        }
 
-        user.setActive(true);
+        user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
         userRepo.save(user);
@@ -60,7 +65,7 @@ public class UserService implements UserDetailsService
         return 0;
     }
 
-    public boolean activateCode(String code)
+    public boolean activateUserWithCode(String code)
     {
         User user = userRepo.findByActivationCode(code);
         if (user == null)
@@ -68,7 +73,8 @@ public class UserService implements UserDetailsService
             return false;
         }
         user.setActivationCode(null);
+        user.setActive(true);
         userRepo.save(user);
-        return false;
+        return true;
     }
 }

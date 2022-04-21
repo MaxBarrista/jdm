@@ -3,6 +3,7 @@
 
 <@c.header />
 <div class="mb-5"><h4>Log in</h4></div>
-${message!}
+<div class="mb-3 text-success">${message!}</div>
+<div class="mb-3 text-danger">${errorMessage!}</div>
 <@l.login "/login" false/>
 <@c.footer />

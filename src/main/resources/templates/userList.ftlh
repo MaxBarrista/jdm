@@ -8,14 +8,19 @@ List of users
     <tr>
         <td>Name</td>
         <td>Role</td>
-        <td><img class="icon" src="/static/icons/editIcon.png"></td>
+        <td>is active?</td>
+        <td><span>Actions</span></td>
     </tr>
     <tbody>
 <#list users as user>
     <tr>
         <td>${user.username}</td>
         <td><#list user.roles as role>${role}<#sep>, </#list></td>
-        <td><a href="/user/${user.id}">edit</a></td>
+        <td><#if user.isActive()>yes<#else>no</#if></td>
+        <td>
+            <a href="/user/${user.id}"><img class="icon" src="/static/icons/editIcon.png"></a>
+            <a href="/user/delete/${user.id}"><img class="icon" src="/static/icons/deleteIcon.png"></a>
+        </td>
     </tr>
 </#list>
     </tbody>
