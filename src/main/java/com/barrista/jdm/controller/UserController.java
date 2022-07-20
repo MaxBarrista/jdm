@@ -73,6 +73,7 @@ public class UserController
     {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
+        model.addAttribute("isActive", user.isActive());
         if (!message.isEmpty())
         {
             model.addAttribute("message", message);
@@ -87,7 +88,7 @@ public class UserController
     @PostMapping("profile")
     public String updateProfile(
             @AuthenticationPrincipal User user,
-            @RequestParam String email,
+            @RequestParam(required = false, defaultValue = "") String email,
             @RequestParam(required = false, defaultValue = "") String oldPassword,
             @RequestParam(required = false, defaultValue = "") String newPassword,
             @RequestParam(required = false, defaultValue = "") String newPasswordConfirm

@@ -10,8 +10,11 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Email:</label>
         <div class="col-sm-6">
-            <input type="email" name="email" class="form-control" required placeholder="example@gmail.com"
+            <input type="email" name="email" class="form-control" placeholder="example@gmail.com"
                    value="${email!}"/>
+            <#if !isActive>
+                <div class="mb-3 text-warning">Email needs to be verified.</div>
+            </#if>
         </div>
     </div>
     <#--    Change password-->
