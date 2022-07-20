@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService
@@ -52,6 +52,12 @@ public class UserService implements UserDetailsService
         user.setActivationCode(UUID.randomUUID().toString());
         userRepo.save(user);
 
+        sendMessage(user);
+        return 0;
+    }
+
+    private void sendMessage(User user)
+    {
         if (!StringUtils.isEmpty(user.getEmail()))
         {
             String message = String.format(
@@ -62,7 +68,6 @@ public class UserService implements UserDetailsService
             );
             mailSender.send(user.getEmail(), "Activation code", message);
         }
-        return 0;
     }
 
     public boolean activateUserWithCode(String code)
@@ -76,5 +81,78 @@ public class UserService implements UserDetailsService
         user.setActive(true);
         userRepo.save(user);
         return true;
+    }
+
+    public List<User> findAll()
+    {
+        return userRepo.findAll();
+    }
+
+    public void deleteUser(Long userId)
+    {
+        User user = userRepo.getById(userId);
+        userRepo.delete(user);
+    }
+
+    public void saveUser(User user, String username, Map<String, String> form)
+    {
+        user.setUsername(username);
+
+        Set<String> roles = Arrays.stream(Role.values())
+                .map(Role::name)
+                .collect(Collectors.toSet());
+
+        user.getRoles().clear();
+
+        for (String key: form.keySet())
+        {
+            if (roles.contains(key))
+            {
+                user.getRoles().add(Role.valueOf(key));
+            }
+        }
+
+        userRepo.save(user);
+    }
+
+    public int updateProfile(User user, String email, String oldPassword, String newPassword, String newPasswordConfirm)
+    {
+        // Password processing
+        if (!oldPassword.isEmpty() || !newPassword.isEmpty() || !newPasswordConfirm.isEmpty())
+        {
+            if (!user.getPassword().equals(oldPassword))
+            {
+                return 1;
+            }
+            else if (newPassword == null || newPassword.isEmpty())
+            {
+                return 2;
+            }
+            else if (!newPassword.equals(newPasswordConfirm))
+            {
+                return 3;
+            }
+            else
+            {
+                user.setPassword(newPassword);
+            }
+        }
+
+        // Email processing
+        String oldEmail = user.getEmail();
+        boolean isEmailChanged = (email != null && !email.equals(oldEmail))
+                || (oldEmail != null && !oldEmail.equals(email));
+
+        if (isEmailChanged)
+        {
+            user.setEmail(email);
+            if (!StringUtils.isEmpty(email))
+            {
+                user.setActivationCode(UUID.randomUUID().toString());
+            }
+            sendMessage(user);
+        }
+        userRepo.save(user);
+        return 0;
     }
 }

@@ -39,6 +39,7 @@ public class RegistrationController
         }
         else
         {
+            // TODO check email var. Why not used?
             int errorMessage = userService.addUser(user);
             if (errorMessage == 1)
             {
