@@ -28,7 +28,6 @@ public class RegistrationController
     public String addUser(
             User user,
             Map<String, Object> model,
-            @RequestParam String email,
             @RequestParam String password,
             @RequestParam String confirmPassword)
     {
@@ -39,7 +38,6 @@ public class RegistrationController
         }
         else
         {
-            // TODO check email var. Why not used?
             int errorMessage = userService.addUser(user);
             if (errorMessage == 1)
             {

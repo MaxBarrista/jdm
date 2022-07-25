@@ -8,15 +8,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class MainController
@@ -76,35 +81,42 @@ public class MainController
 
 	@PostMapping("/main")
 	public String save(
-			@RequestParam String manufacturer,
-			@RequestParam(name="model") String carModel,
-			@RequestParam Integer modelYear,
-			@RequestParam Integer mileage,
 			@AuthenticationPrincipal User user,
-			@RequestParam("file") MultipartFile file,
-			Model model
+			@Valid Car car,
+			BindingResult bindingResult,
+			Model model,
+			@RequestParam MultipartFile file
 	) throws IOException
 	{
-		Calendar calendar = new GregorianCalendar();
-		Car car = new Car(manufacturer, carModel, modelYear, mileage, user, calendar.getTime());
-
-		if(file != null && !file.getOriginalFilename().isEmpty())
+		car.setOwner(user);
+		car.setPublished(new GregorianCalendar().getTime());
+		// If field validation checks failed
+		if (bindingResult.hasErrors())
 		{
-			File uploadDir = new File(uploadPath);
-
-			if(!uploadDir.exists())
-			{
-				uploadDir.mkdir();
-			}
-			String uuidFile = UUID.randomUUID().toString();
-			String fileName = uuidFile + "." + file.getOriginalFilename();
-
-			file.transferTo(new File(uploadPath + "/" + fileName));
-
-			car.setFilename(fileName);
+			Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+			model.mergeAttributes(errorsMap);
+			model.addAttribute("car", car);
 		}
-		carRepo.save(car);
+		else
+		{
+			if (file != null && !file.getOriginalFilename().isEmpty())
+			{
+				File uploadDir = new File(uploadPath);
 
+				if (!uploadDir.exists())
+				{
+					uploadDir.mkdir();
+				}
+				String uuidFile = UUID.randomUUID().toString();
+				String fileName = uuidFile + "." + file.getOriginalFilename();
+
+				file.transferTo(new File(uploadPath + "/" + fileName));
+
+				car.setFilename(fileName);
+			}
+			carRepo.save(car);
+			//model.addAttribute("car", null);
+		}
 		Iterable<Car> cars = carRepo.findAll();
 		model.addAttribute("cars", cars);
 

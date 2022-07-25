@@ -1,6 +1,7 @@
 package com.barrista.jdm.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @Entity
@@ -10,9 +11,16 @@ public class Car
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Manufacturer can not be empty.")
     private String manufacturer;
+    @NotBlank(message = "Model can not be empty.")
     private String model;
+    @NotNull(message = "Model year can not be empty.")
+    @Min(value = 1768, message = "Please enter the correct year.")
+    @Max(value = 2100, message = "Please enter the correct year.")
     private Integer modelYear;
+    @NotNull(message = "Mileage can not be empty.")
+    @Positive
     private Integer mileage;
     private Date published;
 
@@ -26,14 +34,13 @@ public class Car
     {
     }
 
-    public Car(String manufacturer, String model, Integer modelYear, Integer mileage, User user, Date published)
+    public Car(String manufacturer, String model, Integer modelYear, Integer mileage, User user)
     {
         this.manufacturer = manufacturer;
         this.model = model;
         this.modelYear = modelYear;
         this.mileage = mileage;
         this.owner = user;
-        this.published = published;
     }
 
     public Long getId()
