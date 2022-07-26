@@ -5,6 +5,7 @@
 
 
 <div class="form-group mt-3">
+<#--    TODO repalce form with the one in the main template -->
     <form method="post" enctype="multipart/form-data">
         <div class="form-group">
             <input type="text" class="form-control" name="manufacturer" value="${car.manufacturer}">

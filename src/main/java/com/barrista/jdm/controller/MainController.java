@@ -3,6 +3,7 @@ package com.barrista.jdm.controller;
 import com.barrista.jdm.domain.Car;
 import com.barrista.jdm.domain.User;
 import com.barrista.jdm.repos.CarRepo;
+import com.barrista.jdm.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,12 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Controller
 public class MainController
@@ -29,8 +27,15 @@ public class MainController
 	@Autowired
 	private CarRepo carRepo;
 
+	private final CarService carService;
+
 	@Value("${upload.path}")
-	private String uploadPath;
+	public static String uploadPath;
+
+	public MainController(CarService carService)
+	{
+		this.carService = carService;
+	}
 
 	@GetMapping("/")
 	public String greeting(Map<String, Object> model)
@@ -88,66 +93,19 @@ public class MainController
 			@RequestParam MultipartFile file
 	) throws IOException
 	{
-		car.setOwner(user);
-		car.setPublished(new GregorianCalendar().getTime());
-		// If field validation checks failed
-		if (bindingResult.hasErrors())
-		{
-			Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-			model.mergeAttributes(errorsMap);
-			model.addAttribute("car", car);
-		}
-		else
-		{
-			if (file != null && !file.getOriginalFilename().isEmpty())
-			{
-				File uploadDir = new File(uploadPath);
-
-				if (!uploadDir.exists())
-				{
-					uploadDir.mkdir();
-				}
-				String uuidFile = UUID.randomUUID().toString();
-				String fileName = uuidFile + "." + file.getOriginalFilename();
-
-				file.transferTo(new File(uploadPath + "/" + fileName));
-
-				car.setFilename(fileName);
-			}
-			carRepo.save(car);
-			//model.addAttribute("car", null);
-		}
-		Iterable<Car> cars = carRepo.findAll();
-		model.addAttribute("cars", cars);
-
+		carService.save(user, car, bindingResult, model, file);
 		return "main";
 	}
 
 	@GetMapping("/delete/{carId}")
-	public String delete(@PathVariable String carId)
+	public String delete(@PathVariable String carId) throws Exception
 	{
-		List<Car> temp = carRepo.findById(Integer.valueOf(carId));
-		if (temp != null && temp.size() > 0)
-		{
-			carRepo.delete(temp.get(0));
-		}
-		return "redirect:/main";
+		return carService.delete(carId);
 	}
 
 	@GetMapping("/edit/{carId}")
-	public String edit(
-			@PathVariable String carId,
-			Model model
-	)
+	public String edit(@PathVariable String carId, Model model)
 	{
-		List<Car> temp = carRepo.findById(Integer.valueOf(carId));
-		if (temp != null && temp.size() > 0)
-		{
-			Car car = temp.get(0);
-			model.addAttribute("car", car);
-			return "carEdit";
-		}
-
-		return "redirect:/main";
+		return carService.edit(carId, model);
 	}
 }

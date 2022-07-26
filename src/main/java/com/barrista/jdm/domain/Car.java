@@ -3,6 +3,7 @@ package com.barrista.jdm.domain;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 @Entity
 public class Car
@@ -13,15 +14,19 @@ public class Car
 
     @NotBlank(message = "Manufacturer can not be empty.")
     private String manufacturer;
+
     @NotBlank(message = "Model can not be empty.")
     private String model;
+
     @NotNull(message = "Model year can not be empty.")
     @Min(value = 1768, message = "Please enter the correct year.")
     @Max(value = 2100, message = "Please enter the correct year.")
     private Integer modelYear;
+
     @NotNull(message = "Mileage can not be empty.")
     @Positive
     private Integer mileage;
+
     private Date published;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -41,6 +46,7 @@ public class Car
         this.modelYear = modelYear;
         this.mileage = mileage;
         this.owner = user;
+        this.published = new GregorianCalendar().getTime();
     }
 
     public Long getId()

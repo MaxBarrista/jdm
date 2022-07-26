@@ -41,7 +41,7 @@
             </div>
             <div class="form-group">
                 <input type="text" name="modelYear" class="form-control <#if modelYearError??>is-invalid</#if>"
-                       value="<#if car??><#if car.modelYear??>${car.modelYear}</#if></#if>" placeholder="Year:">
+                       value="<#if car??><#if car.modelYear??>${car.modelYear?string.computer}</#if></#if>" placeholder="Year:">
                 <#if modelYearError??>
                     <div class="invalid-feedback">
                         ${modelYearError}
@@ -50,7 +50,7 @@
             </div>
             <div class="form-group">
                 <input type="text" name="mileage" class="form-control <#if mileageError??>is-invalid</#if>"
-                       value="<#if car??><#if car.mileage??>${car.mileage}</#if></#if>" placeholder="Mileage:">
+                       value="<#if car??><#if car.mileage??>${car.mileage?string.computer}</#if></#if>" placeholder="Mileage:">
                 <#if mileageError??>
                     <div class="invalid-feedback">
                         ${mileageError}
@@ -93,11 +93,12 @@
             </td>
             <td><span>${car.manufacturer}</span></td>
             <td><span>${car.model}</span></td>
-            <td><span>${car.modelYear?string.number}</span></td>
-            <td><span>${car.mileage}</span></td>
+            <td><span>${car.modelYear?string.computer}</span></td>
+            <td><span>${car.mileage?string.computer}</span></td>
             <td>
                 <#if car.published??>
-                    <span>${car.published?datetime}</span>
+                    <span>${car.published?date}</span><br>
+                    <span>${car.published?time}</span>
                 </#if>
             </td>
             <td><strong><span>${car.ownerName}</span></strong></td>
