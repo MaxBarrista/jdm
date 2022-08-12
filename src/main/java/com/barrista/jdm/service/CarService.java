@@ -1,10 +1,10 @@
 package com.barrista.jdm.service;
 
 import com.barrista.jdm.controller.ControllerUtils;
-import com.barrista.jdm.controller.MainController;
 import com.barrista.jdm.domain.Car;
 import com.barrista.jdm.domain.User;
 import com.barrista.jdm.repos.CarRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +20,9 @@ import java.util.UUID;
 @Service
 public class CarService
 {
+    @Value("${upload.path}")
+    private String uploadPath;
+
     private final CarRepo carRepo;
 
     public CarService(CarRepo carRepo)
@@ -46,8 +49,10 @@ public class CarService
         return "redirect:/main";
     }
 
-    public void save(User user, Car car, BindingResult bindingResult, Model model, MultipartFile file) throws IOException
+    public String save(User user, Car car, BindingResult bindingResult, Model model, MultipartFile file)
+            throws IOException
     {
+        boolean isFromCarEdit = car.getId() != null;
         // If field validation checks failed
         if (bindingResult.hasErrors())
         {
@@ -57,11 +62,14 @@ public class CarService
         }
         else
         {
-            car.setOwner(user);
-            car.setPublished(new GregorianCalendar().getTime());
+            if (!isFromCarEdit)
+            {
+                car.setOwner(user);
+                car.setPublished(new GregorianCalendar().getTime());
+            }
             if (file != null && !file.getOriginalFilename().isEmpty())
             {
-                File uploadDir = new File(MainController.uploadPath);
+                File uploadDir = new File(uploadPath);
 
                 if (!uploadDir.exists())
                 {
@@ -70,14 +78,30 @@ public class CarService
                 String uuidFile = UUID.randomUUID().toString();
                 String fileName = uuidFile + "." + file.getOriginalFilename();
 
-                file.transferTo(new File(MainController.uploadPath + "/" + fileName));
+                file.transferTo(new File(uploadPath + "/" + fileName));
 
                 car.setFilename(fileName);
+                car.setOriginalFilename(file.getOriginalFilename());
             }
             carRepo.save(car);
-            model.addAttribute("car", null);
+            if (isFromCarEdit)
+            {
+                model.addAttribute("message", "Saved!");
+            }
+            else
+            {
+                model.addAttribute("car", null);
+            }
         }
-        Iterable<Car> cars = carRepo.findAll();
-        model.addAttribute("cars", cars);
+        if (isFromCarEdit)
+        {
+            return "carEdit";
+        }
+        else
+        {
+            Iterable<Car> cars = carRepo.findAll();
+            model.addAttribute("cars", cars);
+            return "main";
+        }
     }
 }

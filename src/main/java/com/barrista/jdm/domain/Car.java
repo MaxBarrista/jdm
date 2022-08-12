@@ -19,12 +19,14 @@ public class Car
     private String model;
 
     @NotNull(message = "Model year can not be empty.")
+//    @Pattern(regexp = "^[+-]?([0-9]+\\.?[0-9]*|\\.[0-9]+)$", message = "Please enter a valid number.")
     @Min(value = 1768, message = "Please enter the correct year.")
     @Max(value = 2100, message = "Please enter the correct year.")
     private Integer modelYear;
 
     @NotNull(message = "Mileage can not be empty.")
-    @Positive
+//    @Pattern(regexp = "^[+-]?([0-9]+\\.?[0-9]*|\\.[0-9]+)$", message = "Please enter a valid number.")
+    @PositiveOrZero(message = "The value can't be negative.")
     private Integer mileage;
 
     private Date published;
@@ -34,6 +36,7 @@ public class Car
     private User owner;
 
     private String filename;
+    private String originalFilename;
 
     public Car()
     {
@@ -122,6 +125,16 @@ public class Car
     public void setFilename(String filename)
     {
         this.filename = filename;
+    }
+
+    public String getOriginalFilename()
+    {
+        return originalFilename;
+    }
+
+    public void setOriginalFilename(String originalFilename)
+    {
+        this.originalFilename = originalFilename;
     }
 
     public Date getPublished()

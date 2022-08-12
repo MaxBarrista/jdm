@@ -3,6 +3,7 @@ create sequence hibernate_sequence start 1 increment 1;
 create table car (
     id int8 not null,
     filename varchar(255),
+    original_filename varchar(255),
     manufacturer varchar(255),
     mileage int4,
     model varchar(255),

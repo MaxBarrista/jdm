@@ -30,7 +30,7 @@ public class MainController
 	private final CarService carService;
 
 	@Value("${upload.path}")
-	public static String uploadPath;
+	private String uploadPath;
 
 	public MainController(CarService carService)
 	{
@@ -93,8 +93,7 @@ public class MainController
 			@RequestParam MultipartFile file
 	) throws IOException
 	{
-		carService.save(user, car, bindingResult, model, file);
-		return "main";
+		return carService.save(user, car, bindingResult, model, file);
 	}
 
 	@GetMapping("/delete/{carId}")
@@ -107,5 +106,17 @@ public class MainController
 	public String edit(@PathVariable String carId, Model model)
 	{
 		return carService.edit(carId, model);
+	}
+
+	@PostMapping("/update/{carId}")
+	public String update(
+			@AuthenticationPrincipal User user,
+			@Valid Car car,
+			BindingResult bindingResult,
+			Model model,
+			@RequestParam MultipartFile file
+	) throws IOException
+	{
+		return carService.update(user, car, bindingResult, model, file);
 	}
 }

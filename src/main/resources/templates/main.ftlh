@@ -1,5 +1,6 @@
 <#import "parts/common.ftlh" as c>
 <#import "parts/login.ftlh" as l>
+<#include "parts/security.ftlh">
 
 <@c.header />
 <div class="form-row">
@@ -103,8 +104,10 @@
             </td>
             <td><strong><span>${car.ownerName}</span></strong></td>
             <td>
-                <a href="/edit/${car.id}"><img class="icon" src="/static/icons/editIcon.png"></a>
-                <a href="/delete/${car.id}"><img class="icon" src="/static/icons/deleteIcon.png"></a>
+                <#if car.ownerName == name || isAdmin>
+                    <a href="/edit/${car.id}"><img class="icon" src="/static/icons/editIcon.png"></a>
+                    <a href="/delete/${car.id}"><img class="icon" src="/static/icons/deleteIcon.png"></a>
+                </#if>
             </td>
         </tr>
     <#else>
