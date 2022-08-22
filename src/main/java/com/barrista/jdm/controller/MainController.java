@@ -142,8 +142,6 @@ public class MainController
 				{
 					carService.update(oldCar, car, file);
 				}
-//				car.setId(Long.valueOf(carId));
-//				model.addAttribute("car", car);
 			}
 			else
 			{

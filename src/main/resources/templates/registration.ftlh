@@ -4,6 +4,5 @@
 <@c.header />
 <div class="mb-4"><h3>Add new user</h3></div>
 <div class="mb-3 text-success">${message!}</div>
-<div class="mb-3 text-danger">${errorMessage!}</div>
 <@l.login "/registration" true/>
 <@c.footer />

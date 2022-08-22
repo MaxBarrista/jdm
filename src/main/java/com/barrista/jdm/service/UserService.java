@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.mail.AuthenticationFailedException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,12 @@ public class UserService implements UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        return userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username);
+        if (user == null)
+        {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return user;
     }
 
     public int addUser(User user) {
@@ -56,11 +62,18 @@ public class UserService implements UserDetailsService
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
 
-        sendMessage(user);
+        try
+        {
+            sendMessage(user);
+        }
+        catch (Exception ex)
+        {
+            return 3;
+        }
         return 0;
     }
 
-    private void sendMessage(User user)
+    private void sendMessage(User user) throws AuthenticationFailedException
     {
         if (!StringUtils.isEmpty(user.getEmail()))
         {
@@ -154,7 +167,14 @@ public class UserService implements UserDetailsService
             {
                 user.setActivationCode(UUID.randomUUID().toString());
             }
-            sendMessage(user);
+            try
+            {
+                sendMessage(user);
+            }
+            catch (Exception e)
+            {
+                return 4;
+            }
         }
         userRepo.save(user);
         return 0;

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @Controller
 public class RegistrationController
@@ -30,31 +31,50 @@ public class RegistrationController
             @Valid User user,
             BindingResult bindingResult,
             Model model,
-            @RequestParam String password,
             @RequestParam String confirmPassword)
     {
-        if (!password.equals(confirmPassword))
+        boolean success = true;
+        if (bindingResult.hasErrors())
         {
-            model.addAttribute("errorMessage", "Passwords do not match");
-            return "registration";
+            Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            success = false;
         }
         else
         {
+            if (!user.getPassword().equals(confirmPassword))
+            {
+                model.addAttribute("confirmPasswordError", "Passwords do not match");
+                success = false;
+            }
             int errorMessage = userService.addUser(user);
             if (errorMessage == 1)
             {
-                model.addAttribute("errorMessage", "This username is already taken");
-                return "registration";
+                model.addAttribute("usernameError", "This username is already taken");
+                success = false;
             }
             else if (errorMessage == 2)
             {
-                model.addAttribute("errorMessage", "This email is already taken");
-                return "registration";
+                model.addAttribute("emailError", "This email is already taken");
+                success = false;
+            }
+            else if (errorMessage == 3)
+            {
+                model.addAttribute("emailError", "Email does not exist");
+                success = false;
             }
         }
-        model.addAttribute("message", "We sent an activation code to " + user.getEmail()
-                + ". Check it to verify your your email");
-        return "login";
+
+        if (success)
+        {
+            model.addAttribute("message", "We sent an activation code to " + user.getEmail()
+                    + ". Check it to verify your your email");
+            return "login";
+        }
+        else
+        {
+            return "registration";
+        }
     }
 
     @GetMapping("/activate/{code}")

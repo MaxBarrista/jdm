@@ -100,22 +100,26 @@ public class UserController
             String message = "Changes saved!";
             return "redirect:/user/profile?message=" + URLEncoder.encode(message, "ISO-8859-1");
         }
-        else if (statusCode == 1)
+        else
         {
-            String errorMessage = "Old password does not match";
-            return "redirect:/user/profile?errorMessage=" + URLEncoder.encode(errorMessage, "ISO-8859-1");
-        } else if (statusCode == 2)
-        {
-            String errorMessage = "New password can not be empty";
-            return "redirect:/user/profile?errorMessage=" + URLEncoder.encode(errorMessage, "ISO-8859-1");
-        } //
-        else if (statusCode == 3)
-        {
-            String errorMessage = "New passwords don't match";
-            return "redirect:/user/profile?errorMessage=" + URLEncoder.encode(errorMessage, "ISO-8859-1");
-        } else
-        {
-            String errorMessage = "Error";
+            String errorMessage;
+            switch (statusCode)
+            {
+                case 1:
+                    errorMessage = "Old password does not match";
+                    break;
+                case 2:
+                    errorMessage = "New password can not be empty";
+                    break;
+                case 3:
+                    errorMessage = "New passwords don't match";
+                    break;
+                case 4:
+                    errorMessage = "Email does not exist";
+                    break;
+                default:
+                    errorMessage = "Error";
+            }
             return "redirect:/user/profile?errorMessage=" + URLEncoder.encode(errorMessage, "ISO-8859-1");
         }
     }
