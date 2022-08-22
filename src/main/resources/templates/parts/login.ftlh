@@ -26,7 +26,8 @@
             <div class="form-group row mb-5">
                 <label class="col-sm-2 col-form-label">Confirm password:</label>
                 <div class="col-sm-6">
-                    <input type="password" name="confirmPassword" class="form-control" required placeholder="confirm password"/>
+                    <input type="password" name="confirmPassword" required placeholder="confirm password"
+                           class="form-control <#if confirmPasswordError??>is-invalid</#if>"/>
                 </div>
             </div>
         </#if>

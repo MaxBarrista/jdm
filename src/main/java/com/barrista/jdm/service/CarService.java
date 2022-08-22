@@ -104,4 +104,30 @@ public class CarService
             return "main";
         }
     }
+
+    public void update(Car oldCar, Car newCar, MultipartFile file) throws IOException
+    {
+        oldCar.setManufacturer(newCar.getManufacturer());
+        oldCar.setModel(newCar.getModel());
+        oldCar.setModelYear(newCar.getModelYear());
+        oldCar.setMileage(newCar.getMileage());
+        if (file != null && !file.getOriginalFilename().isEmpty())
+        {
+            File uploadDir = new File(uploadPath);
+
+            if (!uploadDir.exists())
+            {
+                uploadDir.mkdir();
+            }
+            String uuidFile = UUID.randomUUID().toString();
+            String fileName = uuidFile + "." + file.getOriginalFilename();
+
+            file.transferTo(new File(uploadPath + "/" + fileName));
+
+            oldCar.setFilename(fileName);
+            oldCar.setOriginalFilename(file.getOriginalFilename());
+        }
+        carRepo.save(oldCar);
+
+    }
 }

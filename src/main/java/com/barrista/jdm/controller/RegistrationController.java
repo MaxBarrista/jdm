@@ -5,12 +5,13 @@ import com.barrista.jdm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Map;
+import javax.validation.Valid;
 
 @Controller
 public class RegistrationController
@@ -26,14 +27,15 @@ public class RegistrationController
 
     @PostMapping("/registration")
     public String addUser(
-            User user,
-            Map<String, Object> model,
+            @Valid User user,
+            BindingResult bindingResult,
+            Model model,
             @RequestParam String password,
             @RequestParam String confirmPassword)
     {
         if (!password.equals(confirmPassword))
         {
-            model.put("errorMessage", "Passwords do not match");
+            model.addAttribute("errorMessage", "Passwords do not match");
             return "registration";
         }
         else
@@ -41,16 +43,16 @@ public class RegistrationController
             int errorMessage = userService.addUser(user);
             if (errorMessage == 1)
             {
-                model.put("errorMessage", "This username is already taken");
+                model.addAttribute("errorMessage", "This username is already taken");
                 return "registration";
             }
             else if (errorMessage == 2)
             {
-                model.put("errorMessage", "This email is already taken");
+                model.addAttribute("errorMessage", "This email is already taken");
                 return "registration";
             }
         }
-        model.put("message", "We sent an activation code to " + user.getEmail()
+        model.addAttribute("message", "We sent an activation code to " + user.getEmail()
                 + ". Check it to verify your your email");
         return "login";
     }

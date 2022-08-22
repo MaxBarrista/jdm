@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class MainController
@@ -111,12 +112,49 @@ public class MainController
 	@PostMapping("/update/{carId}")
 	public String update(
 			@AuthenticationPrincipal User user,
+			@PathVariable String carId,
 			@Valid Car car,
 			BindingResult bindingResult,
 			Model model,
 			@RequestParam MultipartFile file
 	) throws IOException
 	{
-		return carService.update(user, car, bindingResult, model, file);
+		/**
+		 * @author IrishkaPoopsen
+		 * @since 2022.08.12
+		 */
+		// блииииин класс не работает!!! какой капец!!!!! девочки это кошмар настоящий, класс не работает,
+		// я программировал его чтобы он работал а он не работает!!!!!!
+		// какая-то жесть!!!!!!!!!!!!!!!!!!
+		Optional<Car> carOpt = carRepo.findById(Long.valueOf(carId));
+		if (carOpt.isPresent())
+		{
+			Car oldCar = carOpt.get();
+			// If the user has the access to modify car info
+			if (user.isAdmin() || user.getUsername().equals(oldCar.getOwnerName()))
+			{
+				if (bindingResult.hasErrors())
+				{
+					Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+					model.mergeAttributes(errorsMap);
+				}
+				else
+				{
+					carService.update(oldCar, car, file);
+				}
+//				car.setId(Long.valueOf(carId));
+//				model.addAttribute("car", car);
+			}
+			else
+			{
+				return "main";
+			}
+		}
+		else
+		{
+			return "main";
+		}
+		model.addAttribute("message", "Saved!");
+		return carService.edit(carId, model);
 	}
 }
