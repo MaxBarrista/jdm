@@ -19,7 +19,9 @@ List of users
         <td><#if user.isActive()>yes<#else>no</#if></td>
         <td>
             <a href="/user/${user.id}"><img class="icon" src="/static/icons/editIcon.png"></a>
-            <a href="/user/delete/${user.id}"><img class="icon" src="/static/icons/deleteIcon.png"></a>
+            <#if !user.isAdmin()>
+                <a href="/user/delete/${user.id}"><img class="icon" src="/static/icons/deleteIcon.png"></a>
+            </#if>
         </td>
     </tr>
 </#list>

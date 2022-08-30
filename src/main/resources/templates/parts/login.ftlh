@@ -53,6 +53,14 @@
                     </#if>
                 </div>
             </div>
+            <div class="col-sm-6 mb-3">
+                <div class="g-recaptcha" data-sitekey="6LfaVqwhAAAAAHkk2ZbUrVcQ5KCAroOeShfPzgoQ"></div>
+                <#if captchaError??>
+                    <div class="alert alert-danger" role="alert">
+                        ${captchaError}
+                    </div>
+                </#if>
+            </div>
         </#if>
         <#if isRegisterForm>
             <div class="form-group row">

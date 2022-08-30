@@ -43,34 +43,36 @@ public class UserService implements UserDetailsService
         return user;
     }
 
-    public int addUser(User user) {
+    public Map<String, String> addUser(User user) {
+        Map<String, String> errorList = new HashMap<>();
         User usernameFromDb = userRepo.findByUsername(user.getUsername());
-
         if (usernameFromDb != null)
         {
-            return 1;
+            errorList.put("usernameError", "This username is already taken");
         }
         usernameFromDb = userRepo.findByEmail(user.getEmail());
         if (usernameFromDb != null && usernameFromDb.isActive())
         {
-            return 2;
+            errorList.put("emailError", "This email is already taken");
         }
 
         user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepo.save(user);
 
         try
         {
+            userRepo.save(user);
             sendMessage(user);
         }
         catch (Exception ex)
         {
-            return 3;
+            System.out.println("ERROR LOG = " + ex.getMessage());
+            errorList.put("emailError", "Email does not exist");
+            userRepo.delete(user);
         }
-        return 0;
+        return errorList;
     }
 
     private void sendMessage(User user) throws AuthenticationFailedException
@@ -78,10 +80,9 @@ public class UserService implements UserDetailsService
         if (!StringUtils.isEmpty(user.getEmail()))
         {
             String message = String.format(
-                    "Hello, %s! \n"
-                            + "Welcome to JDM! Please visit next link to verify your email: " + baseUrl + "activate/%s",
-                    user.getUsername(),
-                    user.getActivationCode()
+                "Hello, %s! \nWelcome to JDM! Please visit next link to verify your email: " + baseUrl + "activate/%s",
+                user.getUsername(),
+                user.getActivationCode()
             );
             mailSender.send(user.getEmail(), "Activation code", message);
         }

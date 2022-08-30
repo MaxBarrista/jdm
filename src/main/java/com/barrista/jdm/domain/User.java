@@ -20,8 +20,6 @@ public class User implements UserDetails
     private String username;
     @NotBlank(message = "Password can not be empty")
     private String password;
-    // @Transient
-    // password2 ?
     @Email(message = "Email is not correct")
     @NotBlank(message = "Email can not be empty")
     private String email;
