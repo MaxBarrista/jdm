@@ -26,4 +26,27 @@ public class MailSender
 
         mailSender.send(mailMessage);
     }
+
+    // TODO
+    public void sendHTML(String emailTo, String subject, String messageHTML)
+    {
+
+//        MimeMessage message = new MimeMessage();
+//        try
+//        {
+//            message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailTo, false));
+//            message.setFrom(new InternetAddress(username, false));
+//            //message.setFrom(username);
+//            //message.setTo(emailTo);
+//            message.setSubject(subject);
+//            message.setContent(messageHTML, "text/html; charset=utf-8");
+//
+//            //message.setSentDate(new Date());
+//            mailSender.send(message);
+//        }
+//        catch(Exception ex)
+//        {
+//            System.out.println("ERROR LOG = " + ex);
+//        }
+    }
 }

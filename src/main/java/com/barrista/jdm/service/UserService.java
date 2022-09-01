@@ -85,6 +85,13 @@ public class UserService implements UserDetailsService
                 user.getActivationCode()
             );
             mailSender.send(user.getEmail(), "Activation code", message);
+
+            // TODO
+//            String messageHTML = "Hello, %s! \nWelcome to JDM! Please visit this "
+//                    + "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + baseUrl + "activate/%s\">link</a>"
+//                    + " to verify your email";
+//            messageHTML = String.format(messageHTML, user.getUsername(), user.getActivationCode());
+//            mailSender.send(user.getEmail(), "Activation code", messageHTML);
         }
     }
 
