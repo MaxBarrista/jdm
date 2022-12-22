@@ -12,9 +12,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/main">Car list</a>
-            </li>
+            <#if user??>
+                <li class="nav-item">
+                    <a class="nav-link" href="/main">Car list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user-cars/${currentUserId}">My cars</a>
+                </li>
+            </#if>
             <#if isAdmin>
                 <li class="nav-item">
                     <a class="nav-link" href="/user">User list</a>

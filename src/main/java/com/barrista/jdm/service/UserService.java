@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService
 {
-    @Value("${base.url}")
-    private String baseUrl;
+    @Value("${hostname}")
+    private String hostname;
 
     private final UserRepo userRepo;
     private final MailSender mailSender;
@@ -80,8 +80,9 @@ public class UserService implements UserDetailsService
         if (!StringUtils.isEmpty(user.getEmail()))
         {
             String message = String.format(
-                "Hello, %s! \nWelcome to JDM! Please visit next link to verify your email: " + baseUrl + "activate/%s",
+                "Hello, %s! \nWelcome to JDM! Please visit next link to verify your email: http://%s/activate/%s",
                 user.getUsername(),
+                hostname,
                 user.getActivationCode()
             );
             mailSender.send(user.getEmail(), "Activation code", message);
@@ -186,5 +187,16 @@ public class UserService implements UserDetailsService
         }
         userRepo.save(user);
         return 0;
+    }
+
+    public void subscribe(User currentUser, User user)
+    {
+        user.getSubscribers().add(currentUser);
+        userRepo.save(user);
+    }
+    public void unsubscribe(User currentUser, User user)
+    {
+        user.getSubscribers().remove(currentUser);
+        userRepo.save(user);
     }
 }

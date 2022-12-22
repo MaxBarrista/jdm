@@ -19,7 +19,6 @@ public class Car
     private String model;
 
     @NotNull(message = "Model year can not be empty.")
-//    @Pattern(regexp = "^[+-]?([0-9]+\\.?[0-9]*|\\.[0-9]+)$", message = "Please enter a valid number.")
     @Min(value = 1768, message = "Please enter the correct year.")
     @Max(value = 2100, message = "Please enter the correct year.")
     private Integer modelYear;

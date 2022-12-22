@@ -2,10 +2,10 @@
 
 <@c.header />
 <div class="mb-3 text-success">${message!}</div>
-<div class="text-light">Car info</div>
+<div class="text-light">Car editor</div>
 
 <div class="form-group mt-3">
-    <form method="post" action="/update/${car.id}" enctype="multipart/form-data">
+    <form method="post" action="/edit/${car.id}" enctype="multipart/form-data">
         <div class="form-group">
             <input type="text" name="manufacturer"
                    class="form-control <#if manufacturerError??>is-invalid</#if>"

@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class MainController
@@ -103,56 +103,68 @@ public class MainController
 		return carService.delete(carId);
 	}
 
-	@GetMapping("/edit/{carId}")
-	public String edit(@PathVariable String carId, Model model)
+	@GetMapping("/edit/{car}")
+	public String editCar(@AuthenticationPrincipal User user, @PathVariable Car car, Model model)
 	{
-		return carService.edit(carId, model);
+		if (!user.isAdmin() && !user.equals(car.getOwner()))
+		{
+			return "error";
+		}
+		model.addAttribute("car", car);
+		return "carEdit";
 	}
 
-	@PostMapping("/update/{carId}")
-	public String update(
+	@PostMapping("/edit/{oldCar}")
+	public String updateCar(
 			@AuthenticationPrincipal User user,
-			@PathVariable String carId,
-			@Valid Car car,
+			@PathVariable Car oldCar,
+			@Valid Car newCar,
 			BindingResult bindingResult,
 			Model model,
 			@RequestParam MultipartFile file
 	) throws IOException
 	{
-		/**
-		 * @author IrishkaPoopsen
-		 * @since 2022.08.12
-		 */
+//		/**
+//		 * @author IrishkaPoopsen
+//		 * @since 2022.08.12
+//		 */
 		// блииииин класс не работает!!! какой капец!!!!! девочки это кошмар настоящий, класс не работает,
 		// я программировал его чтобы он работал а он не работает!!!!!!
 		// какая-то жесть!!!!!!!!!!!!!!!!!!
-		Optional<Car> carOpt = carRepo.findById(Long.valueOf(carId));
-		if (carOpt.isPresent())
+		// If the user has the access to modify car info
+		if (!user.isAdmin() && !user.equals(oldCar.getOwner()))
 		{
-			Car oldCar = carOpt.get();
-			// If the user has the access to modify car info
-			if (user.isAdmin() || user.getUsername().equals(oldCar.getOwnerName()))
-			{
-				if (bindingResult.hasErrors())
-				{
-					Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-					model.mergeAttributes(errorsMap);
-				}
-				else
-				{
-					carService.update(oldCar, car, file);
-				}
-			}
-			else
-			{
-				return "main";
-			}
+			return "error";
+		}
+		if (bindingResult.hasErrors())
+		{
+			Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+			model.mergeAttributes(errorsMap);
 		}
 		else
 		{
-			return "main";
+			carService.update(oldCar, newCar, file);
+			model.addAttribute("message", "Saved!");
 		}
-		model.addAttribute("message", "Saved!");
-		return carService.edit(carId, model);
+		newCar.setId(oldCar.getId());
+		newCar.setFilename(oldCar.getFilename());
+		model.addAttribute("car", newCar);
+		return "carEdit";
+	}
+
+	@GetMapping("/user-cars/{user}")
+	public String userCars(
+			@AuthenticationPrincipal User currentUser,
+			@PathVariable User user,
+			Model model
+	) {
+		Set<Car> cars = user.getCars();
+		model.addAttribute("userChannel", user);
+		model.addAttribute("subscriptionsCount", user.getSubscriptions().size());
+		model.addAttribute("subscribersCount", user.getSubscribers().size());
+		model.addAttribute("isSubscriber", user.getSubscribers().contains(currentUser));
+		model.addAttribute("cars", cars);
+		model.addAttribute("isCurrentUser", currentUser.equals(user));
+		return "userCars";
 	}
 }

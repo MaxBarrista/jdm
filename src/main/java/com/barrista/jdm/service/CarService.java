@@ -30,18 +30,6 @@ public class CarService
         this.carRepo = carRepo;
     }
 
-    public String edit(String carId, Model model)
-    {
-        Optional<Car> carOpt = carRepo.findById(Long.valueOf(carId));
-        if (carOpt.isPresent())
-        {
-            Car car = carOpt.get();
-            model.addAttribute("car", car);
-            return "carEdit";
-        }
-        return "redirect:/main";
-    }
-
     public String delete(String carId) throws Exception
     {
         Optional<Car> temp = carRepo.findById(Long.valueOf(carId));

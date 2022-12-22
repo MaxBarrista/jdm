@@ -79,7 +79,7 @@ public class RegistrationController
             if (errorMap.size() > 0)
             {
                 model.mergeAttributes(errorMap);
-                return "registation";
+                return "registration";
             }
         }
         if (success)

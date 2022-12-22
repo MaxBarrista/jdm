@@ -123,4 +123,51 @@ public class UserController
             return "redirect:/user/profile?errorMessage=" + URLEncoder.encode(errorMessage, "ISO-8859-1");
         }
     }
+
+    @GetMapping("/subscribe/{user}")
+    public String subscribe(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable User user)
+    {
+        if (currentUser.equals(user))
+        {
+            return "error";
+        }
+        userService.subscribe(currentUser, user);
+
+        return "redirect:/user-cars/" + user.getId();
+    }
+
+    @GetMapping("/unsubscribe/{user}")
+    public String unsubscribe(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable User user)
+    {
+        if (currentUser.equals(user))
+        {
+            return "error";
+        }
+        userService.unsubscribe(currentUser, user);
+
+        return "redirect:/user-cars/" + user.getId();
+    }
+
+    @GetMapping("/{type}/{user}/list")
+    public String userList(
+            @PathVariable User user,
+            @PathVariable String type,
+            Model model)
+    {
+        model.addAttribute("userChannel", user);
+        model.addAttribute("type", type);
+        if ("subscriptions".equals(type))
+        {
+            model.addAttribute("users", user.getSubscriptions());
+        }
+        else if ("subscribers".equals(type))
+        {
+            model.addAttribute("users", user.getSubscribers());
+        }
+        return "subscriptions";
+    }
 }
