@@ -18,9 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class MainController
@@ -77,8 +75,10 @@ public class MainController
 		{
 			cars = carRepo.findAll();
 		}
-
-		model.addAttribute("cars", cars);
+		List<Car> carList = new ArrayList<>();
+		cars.forEach(carList::add);
+		Collections.sort(carList, Comparator.comparing(Car::getPublished));
+		model.addAttribute("cars", carList);
 		model.addAttribute("modelFilter", modelFilter);
 		model.addAttribute("manufacturerFilter", manufacturerFilter);
 
@@ -158,12 +158,13 @@ public class MainController
 			@PathVariable User user,
 			Model model
 	) {
-		Set<Car> cars = user.getCars();
+		List<Car> carList = new ArrayList<>(user.getCars());
+		Collections.sort(carList, Comparator.comparing(Car::getPublished));
 		model.addAttribute("userChannel", user);
 		model.addAttribute("subscriptionsCount", user.getSubscriptions().size());
 		model.addAttribute("subscribersCount", user.getSubscribers().size());
 		model.addAttribute("isSubscriber", user.getSubscribers().contains(currentUser));
-		model.addAttribute("cars", cars);
+		model.addAttribute("cars", carList);
 		model.addAttribute("isCurrentUser", currentUser.equals(user));
 		return "userCars";
 	}
